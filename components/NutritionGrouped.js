@@ -81,14 +81,14 @@ export default function NutritionGrouped() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4 md:px-10">
-      <h1 className="text-4xl font-bold text-center text-gray-800 mb-10">Калькулятор Питания</h1>
+    <div className="p-6 max-w-5xl mx-auto grid gap-6 font-sans">
+      <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">🍽️ Калькулятор Питания</h1>
 
-      <Card className="max-w-4xl mx-auto mb-8 shadow-md border border-gray-200">
-        <CardContent className="grid grid-cols-1 md:grid-cols-5 gap-4 p-6 bg-white rounded-xl">
+      <Card>
+        <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 p-4">
           <div>
             <Label>Приём пищи</Label>
-            <Select value={selectedMeal} onChange={(e) => setSelectedMeal(e.target.value)}>
+            <Select value={selectedMeal} onChange={(e) => setSelectedMeal(e.target.value)} className="w-full">
               {MEAL_TIMES.map((time) => (
                 <option key={time} value={time}>{time}</option>
               ))}
@@ -101,7 +101,7 @@ export default function NutritionGrouped() {
               const cat = e.target.value;
               const firstProduct = Object.keys(DATA[cat])[0];
               setForm({ ...form, category: cat, product: firstProduct });
-            }}>
+            }} className="w-full">
               {Object.keys(DATA).map((cat) => (
                 <option key={cat} value={cat}>{cat}</option>
               ))}
@@ -110,7 +110,7 @@ export default function NutritionGrouped() {
 
           <div>
             <Label>Продукт</Label>
-            <Select value={form.product} onChange={(e) => setForm({ ...form, product: e.target.value })}>
+            <Select value={form.product} onChange={(e) => setForm({ ...form, product: e.target.value })} className="w-full">
               {Object.keys(DATA[form.category]).map((prod) => (
                 <option key={prod} value={prod}>{prod}</option>
               ))}
@@ -127,42 +127,38 @@ export default function NutritionGrouped() {
           </div>
 
           <div className="flex items-end">
-            <button onClick={addToMeal} className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl transition">
-              + Добавить
-            </button>
+            <button onClick={addToMeal} className="w-full bg-black text-white py-2 px-4 rounded-xl hover:bg-gray-800 transition">+ Добавить</button>
           </div>
         </CardContent>
       </Card>
 
-      <div className="max-w-4xl mx-auto space-y-6">
-        {MEAL_TIMES.map((time) => {
-          const items = meals[time];
-          if (items.length === 0) return null;
-          const t = totals(items);
-          return (
-            <Card key={time} className="shadow-md border border-gray-200 bg-white">
-              <CardContent className="p-6">
-                <h2 className="text-2xl font-semibold mb-3 text-gray-800">🍽️ {time}</h2>
-                <ul className="space-y-1 mb-4 text-gray-700">
-                  {items.map((item, idx) => {
-                    const m = macros(item);
-                    return (
-                      <li key={idx} className="text-sm">
-                        - {item.name} — {item.amount}
-                        {item.per === "unit" ? " шт." : " г"} →
-                        {` ${m.protein} Б / ${m.fat} Ж / ${m.carb} У / ${m.cal} ккал`}
-                      </li>
-                    );
-                  })}
-                </ul>
-                <div className="font-semibold text-green-700">
-                  ✅ Итог: {t.protein} Б / {t.fat} Ж / {t.carb} У / {t.cal} ккал
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+      {MEAL_TIMES.map((time) => {
+        const items = meals[time];
+        if (items.length === 0) return null;
+        const t = totals(items);
+        return (
+          <Card key={time} className="bg-white shadow border border-gray-200">
+            <CardContent className="p-4">
+              <h2 className="text-lg font-semibold text-gray-700 mb-2">🍴 {time}</h2>
+              <ul className="space-y-1 mb-2">
+                {items.map((item, idx) => {
+                  const m = macros(item);
+                  return (
+                    <li key={idx} className="text-sm text-gray-600">
+                      • {item.name} — {item.amount}
+                      {item.per === "unit" ? " шт." : " г"} →
+                      {` ${m.protein} Б / ${m.fat} Ж / ${m.carb} У / ${m.cal} ккал`}
+                    </li>
+                  );
+                })}
+              </ul>
+              <div className="text-green-700 font-semibold">
+                ✅ Итог: {t.protein} Б / {t.fat} Ж / {t.carb} У / {t.cal} ккал
+              </div>
+            </CardContent>
+          </Card>
+        );
+      })}
     </div>
   );
 }
