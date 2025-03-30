@@ -1,48 +1,82 @@
 import { useEffect, useState } from 'react'
-import { supabase, fetchProfile, saveProfile } from '../lib/supabase'
 
 export default function Profile() {
   const [user, setUser] = useState(null)
   const [profile, setProfile] = useState({ height: '', weight: '', birth_year: '' })
   const [age, setAge] = useState(null)
-  const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState('')
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const session = supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setUser(session.user)
-        loadProfile(session.user.id)
-      }
-    })
-  }, [])
+    const init = async () => {
+      const { createClient } = await import('@supabase/supabase-js')
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+      const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+      const supabase = createClient(supabaseUrl, supabaseKey)
 
-  const loadProfile = async (user_id) => {
-    setLoading(true)
-    const data = await fetchProfile(user_id)
-    if (data) {
-      setProfile({
-        height: data.height || '',
-        weight: data.weight || '',
-        birth_year: data.birth_year || ''
-      })
-      if (data.birth_year) {
-        const currentYear = new Date().getFullYear()
-        setAge(currentYear - data.birth_year)
+      const { data: { session } } = await supabase.auth.getSession()
+      const currentUser = session?.user
+      setUser(currentUser)
+
+      if (!currentUser) {
+        setLoading(false)
+        return
       }
+
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', currentUser.id)
+        .single()
+
+      if (data) {
+        setProfile({
+          height: data.height || '',
+          weight: data.weight || '',
+          birth_year: data.birth_year || ''
+        })
+
+        if (data.birth_year) {
+          const currentYear = new Date().getFullYear()
+          setAge(currentYear - data.birth_year)
+        }
+      }
+
+      setLoading(false)
     }
-    setLoading(false)
-  }
+
+    init()
+  }, [])
 
   const handleSave = async () => {
     if (!user) return
-    const success = await saveProfile(user.id, profile)
-    if (success) {
+
+    const { createClient } = await import('@supabase/supabase-js')
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    const supabase = createClient(supabaseUrl, supabaseKey)
+
+    const { data } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .single()
+
+    const payload = { ...profile, user_id: user.id }
+
+    let result
+    if (data) {
+      result = await supabase.from('profiles').update(payload).eq('user_id', user.id)
+    } else {
+      result = await supabase.from('profiles').insert(payload)
+    }
+
+    if (result.error) {
+      setMessage('❌ Ошибка при сохранении')
+    } else {
       const currentYear = new Date().getFullYear()
       setAge(currentYear - profile.birth_year)
       setMessage('✅ Профиль обновлён!')
-    } else {
-      setMessage('❌ Ошибка при сохранении.')
     }
   }
 
