@@ -1,1 +1,1 @@
-export function Card({ children }) { return <div className='bg-white shadow rounded p-4'>{children}</div> }; export function CardContent({ children }) { return <div>{children}</div> };
+export function Card({ children, className }) { return <div className={`bg-white rounded-xl border ${className}`}>{children}</div> }; export function CardContent({ children, className }) { return <div className={className}>{children}</div> };
