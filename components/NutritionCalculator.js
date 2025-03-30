@@ -1,1 +1,1 @@
-// Nutrition Calculator компонент
+// заглушка компонента NutritionCalculator
