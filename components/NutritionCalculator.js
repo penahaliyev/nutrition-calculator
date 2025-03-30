@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Input } from "./ui/input";
+import { Card, CardContent } from "./ui/card";
+import { Label } from "./ui/label";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "./ui/select";
 
 const DATA = {
   "Протеин": {
