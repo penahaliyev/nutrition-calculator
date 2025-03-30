@@ -1,1 +1,1 @@
-import NutritionGrouped from "../components/NutritionGrouped"; export default function Home() { return <NutritionGrouped />; }
+// Главная страница
