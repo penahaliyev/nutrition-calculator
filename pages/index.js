@@ -1,7 +1,41 @@
 
 import Head from 'next/head'
+import { Heart, Activity, Flame, UtensilsCrossed, ChefHat } from 'lucide-react'
 
 export default function Home() {
+  const tools = [
+    {
+      title: 'BMR',
+      desc: 'Calculate your Basal Metabolic Rate',
+      icon: <Heart className="w-5 h-5" />,
+      color: 'blue'
+    },
+    {
+      title: 'BMI',
+      desc: 'Calculate your Body Mass Index',
+      icon: <Activity className="w-5 h-5" />,
+      color: 'green'
+    },
+    {
+      title: 'Calories',
+      desc: 'Calculate daily calorie needs',
+      icon: <Flame className="w-5 h-5" />,
+      color: 'orange'
+    },
+    {
+      title: 'Macros',
+      desc: 'Calculate your macronutrient ratio',
+      icon: <UtensilsCrossed className="w-5 h-5" />,
+      color: 'purple'
+    },
+    {
+      title: 'Meal Plan',
+      desc: 'Create personalized meal plans',
+      icon: <ChefHat className="w-5 h-5" />,
+      color: 'rose'
+    }
+  ];
+
   return (
     <>
       <Head>
@@ -38,16 +72,10 @@ export default function Home() {
         </section>
 
         <section className="py-16 px-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 max-w-6xl mx-auto">
-          {[
-            { title: 'BMR', desc: 'Calculate your Basal Metabolic Rate', color: 'blue' },
-            { title: 'BMI', desc: 'Calculate your Body Mass Index', color: 'green' },
-            { title: 'Calories', desc: 'Calculate daily calorie needs', color: 'orange' },
-            { title: 'Macros', desc: 'Calculate your macronutrient ratio', color: 'purple' },
-            { title: 'Meal Plan', desc: 'Create personalized meal plans', color: 'rose' },
-          ].map((item) => (
+          {tools.map((item) => (
             <div key={item.title} className="bg-white rounded-xl p-6 border text-left shadow-sm hover:shadow-md transition">
               <div className={`w-10 h-10 rounded-full bg-${item.color}-100 text-${item.color}-600 flex items-center justify-center mb-4`}>
-                <span className="text-xl">🍽️</span>
+                {item.icon}
               </div>
               <h3 className="font-semibold text-gray-800">{item.title}</h3>
               <p className="text-sm text-gray-600 mb-2">{item.desc}</p>
